@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jawids Store</title>
+  <link rel="stylesheet" href="DaftarPesanan.css" />
+  <script src="DaftarPesanan.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Jawids Store</h1>
+
+    <div class="product-list">
+      <h2>Daftar Produk</h2>
+      <div class="card">
+        <h3>Beras 5kg</h3>
+        <p>Rp 70.000</p>
+        <button onclick="addToCart('Beras 5kg', 70000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="card">
+        <h3>Minyak Goreng 2L</h3>
+        <p>Rp 35.000</p>
+        <button onclick="addToCart('Minyak Goreng 2L', 35000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="card">
+        <h3>Gula Pasir 1kg</h3>
+        <p>Rp 16.000</p>
+        <button onclick="addToCart('Gula Pasir 1kg', 16000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="card">
+        <h3>Telur Ayam 1kg</h3>
+        <p>Rp 28.000</p>
+        <button onclick="addToCart('Telur Ayam 1kg', 28000)">Tambah ke Keranjang</button>
+      </div>
+    </div>
+
+    <div class="cart-section">
+      <h2>Keranjang Belanja</h2>
+      <ul id="cartList"></ul>
+      <p id="cartTotal">Total: Rp 0</p>
+      <button onclick="checkout()">Checkout</button>
+    </div>
+
+    <div class="order-section">
+      <h2>Daftar Pesanan</h2>
+      <form id="orderForm">
+        <input type="text" id="orderInput" placeholder="Nama pesanan" required />
+        <button type="submit">Tambah Pesanan</button>
+      </form>
+      <ul id="orderList"></ul>
+    </div>
+  </div>
+
+  <script>
+    let cart = [];
+
+    function addToCart(name, price) {
+      const found = cart.find(item => item.name === name);
+      if (found) {
+        found.qty += 1;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      renderCart();
+    }
+
+    function removeFromCart(name) {
+      cart = cart.filter(item => item.name !== name);
+      renderCart();
+    }
+
+    function renderCart() {
+      const cartList = document.getElementById('cartList');
+      const cartTotal = document.getElementById('cartTotal');
+      cartList.innerHTML = '';
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price * item.qty;
+        const li = document.createElement('li');
+        li.textContent = `${item.name} x${item.qty} - Rp ${item.price * item.qty}`;
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Hapus';
+        delBtn.onclick = () => removeFromCart(item.name);
+        li.appendChild(delBtn);
+        cartList.appendChild(li);
+      });
+      cartTotal.textContent = 'Total: Rp ' + total;
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert('Keranjang kosong!');
+        return;
+      }
+      alert('Pesanan berhasil dibuat!');
+      cart = [];
+      renderCart();
+    }
+
+    const orderForm = document.getElementById('orderForm');
+    const orderInput = document.getElementById('orderInput');
+    const orderList = document.getElementById('orderList');
+
+    orderForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const orderName = orderInput.value.trim();
+      if (orderName) {
+        const li = document.createElement('li');
+        li.textContent = orderName + ' ';
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Hapus';
+        delBtn.onclick = () => orderList.removeChild(li);
+        li.appendChild(delBtn);
+        orderList.appendChild(li);
+        orderInput.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
